@@ -2,7 +2,9 @@ import pandas as pd
 import sqlalchemy
 import csv
 
-filename = 'animelist_related.csv'
+st_csv_filename = 'csv\\initial csv\\anime_filtered.csv'
+
+filename = 'csv\\test csv\\animelist_related.csv'
 
 mysql_engine = 'mysql://root@localhost:3306/anime_norm_maria?charset=utf8'
 engine = sqlalchemy.create_engine(mysql_engine)
@@ -11,8 +13,8 @@ q = """
         SELECT *
         FROM anime_filtered_full
     """
-
-relateds = pd.read_sql(q, engine)
+relateds = pd.read_csv(st_csv_filename)
+# relateds = pd.read_sql(q, engine)
 obj_id = list()
 obj = list()
 full_filtered_list = list()
@@ -74,7 +76,6 @@ for k in range(len(obj_id)):
                 if int(full_filtered_list[k][i][1][j]) != 0:
                     table.append((int(obj_id[k]), int(id_rel.get(full_filtered_list[k][i][0])), int(full_filtered_list[k][i][1][j])))
     except IndexError:
-        # print(obj_id[k])
         pass
 
 less = set()
@@ -83,15 +84,10 @@ for i in range(len(table) - 1, 0, -1):
         print(table[i][2])
         less.add(table[i][2])
         table.pop(i)
-        # i -= 1
-        # print(sch, table[2[i][2])
 
 table = sorted(table, key=lambda x: (x[0], x[1], x[2]))
-
-zp = pd.DataFrame(table).to_csv('test' + filename, header=None, encoding='utf-8-sig')
-
-with open(filename, "w", newline="") as file:
-    writer = csv.writer(file)
-    writer.writerows(table)
-print('File', filename, 'created')
+zp = pd.DataFrame(table)
+zp.to_csv(filename, header=None, index=False, encoding='utf-8-sig')
+zp.rename(columns={0: 'id_anime_object', 1: 'id_relations', 2: 'id_anime_subject'}).to_sql('animelist_related', index=False,  if_exists='append', con=engine)
+print('Table Animelist_producer updated')
 
