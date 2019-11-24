@@ -1,12 +1,10 @@
 import pandas as pd
-import numpy as np
 import sqlalchemy
 
 # import data from animelist to tables:
 #           producer, licensor, studio, genres,
 #           animelist_producer, animelist_licensor, animelist_studio, animelist_genres
 #  and create .csv files to */csv
-
 st_csv_filename = 'csv\\initial csv\\anime_filtered.csv'
 
 mysql_engine = 'mysql://root@localhost:3306/anime_norm_maria?charset=utf8'
@@ -19,6 +17,7 @@ q = """
 
 
 plsg = pd.read_csv(st_csv_filename)
+# plsg = pd.read_sql(q, engine)
 
 
 # main_files
@@ -73,7 +72,7 @@ def reindexing(lst):
 # запись основных таблиц в csv
 for s, c, l, f in zip(sets, cols, main_lists, main_files):
     for k, v in plsg.iterrows():
-        if not v[c] is None and str(v[c]) != 'nan':
+        if not v[c] is None:
             v[c] = v[c].replace('&#039;', "'").replace('&amp;', "&")
             s.update(set(list(map(str, v[c].split(', ')))))
     l.append('None')
@@ -81,8 +80,7 @@ for s, c, l, f in zip(sets, cols, main_lists, main_files):
     reindexing(l).to_csv(f, header=None, encoding='utf-8-sig')
     print(f, 'updated')
 
-
-# # запись основных таблиц в базу
+# запись основных таблиц в базу
 print()
 reindexing(prods_list).rename(columns={0: 'title_producer'}).to_sql('producer', index='id_producer',  if_exists='append', con=engine)
 print('Table Producer updated')
@@ -90,14 +88,13 @@ reindexing(licens_list).rename(columns={0: 'title_licensor'}).to_sql('licensor',
 print('Table Licensor updated')
 reindexing(studs_list).rename(columns={0: 'title_studio'}).to_sql('studio', index='id_studio',  if_exists='append', con=engine)
 print('Table Studio updated')
-reindexing(genres_list).rename(columns={0: 'title_genre'}).to_sql('genre', index='id_genre',  if_exists='append', con=engine)
+reindexing(genres_list).rename(columns={0: 'title_genre'}).to_sql('genres', index='id_genre',  if_exists='append', con=engine)
 print('Table Genres updated')
-
 
 # запись промежуточных таблиц в csv
 for c, m, stl, stf in zip(cols, main_lists, staging_lists, staging_files):
     for k, v in plsg.iterrows():
-        if not v[c] is None and str(v[c]) != 'nan':
+        if not v[c] is None:
             v[c] = v[c].replace('&#039;', "'").replace('&amp;', "&")
             buf_list = list(map(str, v[c].split(', ')))
             for i in range(len(buf_list)):
@@ -107,14 +104,13 @@ for c, m, stl, stf in zip(cols, main_lists, staging_lists, staging_files):
     reindexing(stl).to_csv(stf, header=None, index=None, encoding='utf-8-sig')
     print(stf, 'updated')
 
-
-# # запись промежуточных таблиц в базу
-reindexing(prods_animelist_list).rename(columns={0: 'id_anime', 1: 'id_producer'}).to_sql('anime_producer', index=False,  if_exists='append', con=engine)
+# запись промежуточных таблиц в базу
+reindexing(prods_animelist_list).rename(columns={0: 'id_anime', 1: 'id_producer'}).to_sql('animelist_producer', index=False,  if_exists='append', con=engine)
 print('Table Animelist_producer updated')
-reindexing(licens_animelist_list).rename(columns={0: 'id_anime', 1: 'id_licensor'}).to_sql('anime_licensor', index=False,  if_exists='append', con=engine)
+reindexing(licens_animelist_list).rename(columns={0: 'id_anime', 1: 'id_licensor'}).to_sql('animelist_licensor', index=False,  if_exists='append', con=engine)
 print('Table Animelist_licensor updated')
-reindexing(studs_animelist_list).rename(columns={0: 'id_anime', 1: 'id_studio'}).to_sql('anime_studio', index=False,  if_exists='append', con=engine)
+reindexing(studs_animelist_list).rename(columns={0: 'id_anime', 1: 'id_studio'}).to_sql('animelist_studio', index=False,  if_exists='append', con=engine)
 print('Table Animelist_studio updated')
-reindexing(genres_animelist_list).rename(columns={0: 'id_anime', 1: 'id_genre'}).to_sql('anime_genre', index=False,  if_exists='append', con=engine)
+reindexing(genres_animelist_list).rename(columns={0: 'id_anime', 1: 'id_genre'}).to_sql('animelist_genre', index=False,  if_exists='append', con=engine)
 print('Table Animelist_genre updated')
 print('Completed!')
