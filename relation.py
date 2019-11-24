@@ -4,7 +4,7 @@ import csv
 
 st_csv_filename = 'csv\\initial csv\\anime_filtered.csv'
 
-filename = 'csv\\test csv\\animelist_related.csv'
+filename = 'csv\\animelist_related.csv'
 
 mysql_engine = 'mysql://root@localhost:3306/anime_norm_maria?charset=utf8'
 engine = sqlalchemy.create_engine(mysql_engine)
