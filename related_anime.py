@@ -2,23 +2,27 @@ import pandas as pd
 import sqlalchemy
 import csv
 
+# ссылка на начальный csv-файл
 st_csv_filename = 'csv\\initial csv\\anime_filtered.csv'
 
+# ссылка на csv-файл для записи
 filename = 'csv\\test csv\\animelist_related.csv'
 
 mysql_engine = 'mysql://root@localhost:3306/anime_norm_maria?charset=utf8'
 engine = sqlalchemy.create_engine(mysql_engine)
 
-q = """
-        SELECT *
-        FROM anime_filtered_full
-    """
 relateds = pd.read_csv(st_csv_filename)
-# relateds = pd.read_sql(q, engine)
+
+# --------------------------
+# для работы магии
+# НЕ ТРОГАТЬ!
 obj_id = list()
-obj = list()
 full_filtered_list = list()
 table = list()
+
+# --------------------------
+
+# список (множество) с типами связи между аниме
 id_rel = dict([("Adaptation", 1),
                        ("Side story", 2),
                        ("Other", 3),
@@ -32,6 +36,9 @@ id_rel = dict([("Adaptation", 1),
                        ("Spin-off", 11),
                        ("Character", 12)])
 
+# --------------------------
+# начало ах-еть какой магии
+# НЕ ТРОГАТЬ!
 for k, v in relateds.iterrows():
     obj_id.append(v.anime_id)
 
@@ -65,7 +72,6 @@ for k, v in relateds.iterrows():
                 filtered_list.append(w[i])
 
         full_filtered_list.append(filtered_list)
-
     else:
         full_filtered_list.append('empty')
 
@@ -77,17 +83,22 @@ for k in range(len(obj_id)):
                     table.append((int(obj_id[k]), int(id_rel.get(full_filtered_list[k][i][0])), int(full_filtered_list[k][i][1][j])))
     except IndexError:
         pass
+# Конец магии
+# --------------------------
 
-less = set()
+
+# проверка на ссылку аниме самой на себя
+#   и на наличие субъекта в списке объектов
 for i in range(len(table) - 1, 0, -1):
     if table[i][2] not in obj_id or table[i][2] == table[i][0]:
-        print(table[i][2])
-        less.add(table[i][2])
         table.pop(i)
 
-table = sorted(table, key=lambda x: (x[0], x[1], x[2]))
-zp = pd.DataFrame(table)
+zp = pd.DataFrame(sorted(table, key=lambda x: (x[0], x[1], x[2])))
+
+# запись в csv
 zp.to_csv(filename, header=None, index=False, encoding='utf-8-sig')
+print(filename, 'updated')
+# запись в animelist_related в базу
 zp.rename(columns={0: 'id_anime_object', 1: 'id_relations', 2: 'id_anime_subject'}).to_sql('animelist_related', index=False,  if_exists='append', con=engine)
-print('Table Animelist_producer updated')
+print('Table Animelist_related updated')
 
