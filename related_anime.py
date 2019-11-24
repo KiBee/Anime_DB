@@ -88,7 +88,10 @@ for i in range(len(table) - 1, 0, -1):
 
 table = sorted(table, key=lambda x: (x[0], x[1], x[2]))
 
+zp = pd.DataFrame(table).to_csv('test' + filename, header=None, encoding='utf-8-sig')
+
 with open(filename, "w", newline="") as file:
     writer = csv.writer(file)
     writer.writerows(table)
 print('File', filename, 'created')
+
