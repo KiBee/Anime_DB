@@ -5,7 +5,7 @@ import sqlalchemy
 #           producer, licensor, studio, genres,
 #           animelist_producer, animelist_licensor, animelist_studio, animelist_genres
 #  and create .csv files to */csv
-
+st_csv_filename = 'csv\\initial csv\\anime_filtered.csv'
 
 mysql_engine = 'mysql://root@localhost:3306/anime_norm_maria?charset=utf8'
 engine = sqlalchemy.create_engine(mysql_engine)
@@ -14,7 +14,10 @@ q = """
         SELECT *
         FROM anime_filtered_full
     """
-plsg = pd.read_sql(q, engine)
+
+
+plsg = pd.read_csv(st_csv_filename)
+# plsg = pd.read_sql(q, engine)
 
 
 # main_files
