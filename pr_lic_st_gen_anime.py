@@ -1,12 +1,10 @@
 import pandas as pd
-import numpy as np
 import sqlalchemy
 
 # import data from animelist to tables:
 #           producer, licensor, studio, genres,
 #           animelist_producer, animelist_licensor, animelist_studio, animelist_genres
 #  and create .csv files to */csv
-
 
 st_csv_filename = 'csv\\initial csv\\anime_filtered.csv'
 
@@ -22,10 +20,10 @@ studs_file = 'csv\\studio.csv'
 genres_file = 'csv\\genres.csv'
 
 # staging_files
-prods_animelist_file = 'csv\\animelist_producer.csv'
-licens_animelist_file = 'csv\\animelist_licensor.csv'
-studs_animelist_file = 'csv\\animelist_studio.csv'
-genres_animelist_file = 'csv\\animelist_genres.csv'
+prods_animelist_file = 'csv\\anime_producer.csv'
+licens_animelist_file = 'csv\\anime_licensor.csv'
+studs_animelist_file = 'csv\\anime_studio.csv'
+genres_animelist_file = 'csv\\anime_genres.csv'
 
 # sets
 prods = set()
@@ -55,8 +53,6 @@ main_files = [prods_file, licens_file, studs_file, genres_file]
 # списки для промежуточных таблиц
 staging_lists = [prods_animelist_list, licens_animelist_list, studs_animelist_list, genres_animelist_list]
 staging_files = [prods_animelist_file, licens_animelist_file, studs_animelist_file, genres_animelist_file]
-
-
 
 
 # перезапись поля duration (перевод в минуты)
@@ -113,23 +109,23 @@ anime.duration = anime.duration.apply(change_dur)
 anime.image_url = anime.image_url.apply(change_url_img)
 
 # запись основных таблиц в csv
-for s, c, l, f in zip(sets, cols, main_lists, main_files):
+for s, c, m, f, stl, stf in zip(sets, cols, main_lists, main_files, staging_lists, staging_files):
     for k, v in anime.iterrows():
         if not v[c] is None and str(v[c]) != 'nan':
             v[c] = v[c].replace('&#039;', "'").replace('&amp;', "&")
             s.update(set(list(map(str, v[c].split(', ')))))
-    l.append('None')
-    l.extend(sorted(s))
-    reindexing(l).to_csv(f, header=None, encoding='utf-8-sig')
-    print(f, 'updated')
-    reindexing(l).rename(columns={0: f'title_{c}'}).to_sql(c, index=f'id_{c}',
-                                                                        if_exists='append', con=engine)
-    print(f'Table {c} updated')
+    m.append('None')
+    m.extend(sorted(s))
 
+    # запись основных таблиц в csv
+    reindexing(m).to_csv(f, header=None, encoding='utf-8-sig')
+    print(f, 'updated!')
 
+    # запись основных таблиц в базу
+    reindexing(m).rename(columns={0: f'title_{c}'}).to_sql(c, index=f'id_{c}', if_exists='append', con=engine)
+    print(f'Table {c} updated!')
+    print()
 
-# запись промежуточных таблиц в csv
-for c, m, stl, stf in zip(cols, main_lists, staging_lists, staging_files):
     for k, v in anime.iterrows():
         if not v[c] is None and str(v[c]) != 'nan':
             v[c] = v[c].replace('&#039;', "'").replace('&amp;', "&")
@@ -138,20 +134,14 @@ for c, m, stl, stf in zip(cols, main_lists, staging_lists, staging_files):
                 stl.append(list(map(int, (v.anime_id, m.index(buf_list[i])))))
         else:
             stl.append(list(map(int, (v.anime_id, 1))))
+
     reindexing(stl).to_csv(stf, header=None, index=None, encoding='utf-8-sig')
-    print(stf, 'updated')
+    print(stf, 'updated!')
 
-# запись промежуточных таблиц в базу
-reindexing(prods_animelist_list).rename(columns={0: 'id_anime', 1: 'id_producer'}).to_sql('anime_producer', index=False,  if_exists='replace', con=engine)
-print('Table Animelist_producer updated')
-reindexing(licens_animelist_list).rename(columns={0: 'id_anime', 1: 'id_licensor'}).to_sql('anime_licensor', index=False,  if_exists='replace', con=engine)
-print('Table Animelist_licensor updated')
-reindexing(studs_animelist_list).rename(columns={0: 'id_anime', 1: 'id_studio'}).to_sql('anime_studio', index=False,  if_exists='replace', con=engine)
-print('Table Animelist_studio updated')
-reindexing(genres_animelist_list).rename(columns={0: 'id_anime', 1: 'id_genre'}).to_sql('anime_genre', index=False,  if_exists='replace', con=engine)
-print('Table Animelist_genre updated')
-print('Completed!')
-
+    reindexing(stl).rename(columns={0: 'id_anime', 1: f'id_{c}'}).to_sql(f'anime_{c}', index=False, if_exists='replace',
+                                                                         con=engine)
+    print(f'Table {c}_anime updated!')
+    print()
 
 anime.drop(
     columns=['airing', 'aired_string', 'aired', 'score', 'scored_by', 'rank', 'popularity', 'members', 'favorites',
@@ -175,3 +165,7 @@ anime.rename(columns={0: 'anime_id',
                       21: 'url_mal',
                       22: 'url_shiki'
                       }).to_sql('test_anime', index=False, if_exists='replace', con=engine)
+
+print('Table test_anime updated!')
+print('Complete!')
+
