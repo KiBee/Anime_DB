@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import sqlalchemy
 
 # import data from animelist to tables:
@@ -72,7 +73,7 @@ def reindexing(lst):
 # запись основных таблиц в csv
 for s, c, l, f in zip(sets, cols, main_lists, main_files):
     for k, v in plsg.iterrows():
-        if not v[c] is None:
+        if not v[c] is None and str(v[c]) != 'nan':
             v[c] = v[c].replace('&#039;', "'").replace('&amp;', "&")
             s.update(set(list(map(str, v[c].split(', ')))))
     l.append('None')
