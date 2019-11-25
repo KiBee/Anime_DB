@@ -89,7 +89,7 @@ reindexing(licens_list).rename(columns={0: 'title_licensor'}).to_sql('licensor',
 print('Table Licensor updated')
 reindexing(studs_list).rename(columns={0: 'title_studio'}).to_sql('studio', index='id_studio',  if_exists='append', con=engine)
 print('Table Studio updated')
-reindexing(genres_list).rename(columns={0: 'title_genre'}).to_sql('genres', index='id_genre',  if_exists='append', con=engine)
+reindexing(genres_list).rename(columns={0: 'title_genre'}).to_sql('genre', index='id_genre',  if_exists='append', con=engine)
 print('Table Genres updated')
 
 # запись промежуточных таблиц в csv
