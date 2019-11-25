@@ -20,8 +20,8 @@ full_filtered_list = list()
 table = list()
 
 for k, v in initial_df.iterrows():
-    obj_id.append(v.anime_id)
-    v.image_url.replace('https://myanimelist.cdn-dena.com/', 'https://cdn.myanimelist.net/')
+    # obj_id.append(v.anime_id)
+    # v.image_url.replace('https://myanimelist.cdn-dena.com/', 'https://cdn.myanimelist.net/')
 
 
 
@@ -67,14 +67,18 @@ for k in range(len(obj_id)):
                     table.append((int(obj_id[k]), full_filtered_list[k][i][0], int(full_filtered_list[k][i][1][j])))
     except IndexError:
         pass
-
+sch = 0
 for i in range(len(table) - 1, 0, -1):
     if table[i][2] not in obj_id or table[i][2] == table[i][0]:
+        sch += 1
+        print(sch)
         table.pop(i)
 
+print(sch)
 
-zp = pd.DataFrame(sorted(table, key=lambda x: (x[0], x[1], x[2])))
-zp.to_csv(filename, header=None, index=False, encoding='utf-8-sig')
-print(filename, 'updated!')
-zp.rename(columns={0: 'id_anime_object', 1: 'id_relation', 2: 'id_anime_subject'}).to_sql('relation', index=False,  if_exists='append', con=engine)
-print('Table Relation updated!')
+
+# zp = pd.DataFrame(sorted(table, key=lambda x: (x[0], x[1], x[2])))
+# zp.to_csv(filename, header=None, index=False, encoding='utf-8-sig')
+# print(filename, 'updated!')
+# zp.rename(columns={0: 'id_anime_object', 1: 'id_relation', 2: 'id_anime_subject'}).to_sql('relation', index=False,  if_exists='append', con=engine)
+# print('Table Relation updated!')

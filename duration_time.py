@@ -6,15 +6,14 @@ engine = sqlalchemy.create_engine(mysql_engine)
 
 st_csv_filename = 'csv\\initial csv\\anime_filtered.csv'
 
-
 in_df = pd.read_csv(st_csv_filename)
 
 in_df['url_mal'] = 'https://myanimelist.net/anime/' + in_df.anime_id.apply(str)
 in_df['url_shiki'] = 'https://shikimori.one/animes/' + in_df.anime_id.apply(str)
 
-
 dur = list()
 id = list()
+
 
 # for k, v in in_df.iterrows():
 #     dur.append(v.duration)
@@ -37,10 +36,6 @@ id = list()
 
 
 def change_dur(x):
-
-    # dur.append(v.duration)
-    # id.append(v.anime_id)
-
     if 'per ep' in x:
         x = x[:-8]
 
@@ -56,6 +51,7 @@ def change_dur(x):
         x = '1'
     if type(x) != int and 'Unknown' in x:
         x = 0
+
     return x
 
 
@@ -63,7 +59,3 @@ in_df.duration = in_df.duration.apply(change_dur)
 
 # for i in range(len(id)):
 #     in_df.loc[in_df['anime_id'] == id[i], 'duration'] = dur[i]
-
-
-
-
