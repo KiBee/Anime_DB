@@ -59,7 +59,7 @@ def change_dur(x):
     return x
 
 
-in_df.duration = in_df.duration.apply(change_dur)
+in_df.duration.apply(change_dur)
 
 # for i in range(len(id)):
 #     in_df.loc[in_df['anime_id'] == id[i], 'duration'] = dur[i]
