@@ -122,18 +122,11 @@ for s, c, l, f in zip(sets, cols, main_lists, main_files):
     l.extend(sorted(s))
     reindexing(l).to_csv(f, header=None, encoding='utf-8-sig')
     print(f, 'updated')
+    reindexing(l).rename(columns={0: f'title_{c}'}).to_sql(c, index=f'id_{c}',
+                                                                        if_exists='append', con=engine)
+    print(f'Table {c} updated')
 
 
-# запись основных таблиц в базу
-print()
-reindexing(prods_list).rename(columns={0: 'title_producer'}).to_sql('producer', index='id_producer',  if_exists='append', con=engine)
-print('Table Producer updated')
-reindexing(licens_list).rename(columns={0: 'title_licensor'}).to_sql('licensor', index='id_licensor',  if_exists='append', con=engine)
-print('Table Licensor updated')
-reindexing(studs_list).rename(columns={0: 'title_studio'}).to_sql('studio', index='id_studio',  if_exists='append', con=engine)
-print('Table Studio updated')
-reindexing(genres_list).rename(columns={0: 'title_genre'}).to_sql('genre', index='id_genre',  if_exists='append', con=engine)
-print('Table Genres updated')
 
 # запись промежуточных таблиц в csv
 for c, m, stl, stf in zip(cols, main_lists, staging_lists, staging_files):
