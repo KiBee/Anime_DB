@@ -106,12 +106,12 @@ for c, m, stl, stf in zip(cols, main_lists, staging_lists, staging_files):
     print(stf, 'updated')
 
 # # запись промежуточных таблиц в базу
-reindexing(prods_animelist_list).rename(columns={0: 'id_anime', 1: 'id_producer'}).to_sql('animelist_producer', index=False,  if_exists='append', con=engine)
+reindexing(prods_animelist_list).rename(columns={0: 'id_anime', 1: 'id_producer'}).to_sql('anime_producer', index=False,  if_exists='append', con=engine)
 print('Table Animelist_producer updated')
-reindexing(licens_animelist_list).rename(columns={0: 'id_anime', 1: 'id_licensor'}).to_sql('animelist_licensor', index=False,  if_exists='append', con=engine)
+reindexing(licens_animelist_list).rename(columns={0: 'id_anime', 1: 'id_licensor'}).to_sql('anime_licensor', index=False,  if_exists='append', con=engine)
 print('Table Animelist_licensor updated')
-reindexing(studs_animelist_list).rename(columns={0: 'id_anime', 1: 'id_studio'}).to_sql('animelist_studio', index=False,  if_exists='append', con=engine)
+reindexing(studs_animelist_list).rename(columns={0: 'id_anime', 1: 'id_studio'}).to_sql('anime_studio', index=False,  if_exists='append', con=engine)
 print('Table Animelist_studio updated')
-reindexing(genres_animelist_list).rename(columns={0: 'id_anime', 1: 'id_genre'}).to_sql('animelist_genre', index=False,  if_exists='append', con=engine)
+reindexing(genres_animelist_list).rename(columns={0: 'id_anime', 1: 'id_genre'}).to_sql('anime_genre', index=False,  if_exists='append', con=engine)
 print('Table Animelist_genre updated')
 print('Completed!')
