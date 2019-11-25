@@ -9,18 +9,21 @@ os.makedirs('csv\\test csv', exist_ok=True)
 
 st_csv_filename = 'csv\\initial csv\\anime_filtered.csv'
 
-filename = 'csv\\animelist_related.csv'
+filename = 'csv\\relation.csv'
 
 mysql_engine = 'mysql://root@localhost:3306/anime_norm_maria?charset=utf8'
 engine = sqlalchemy.create_engine(mysql_engine)
 
-relateds = pd.read_csv(st_csv_filename)
+initial_df = pd.read_csv(st_csv_filename)
 obj_id = list()
 full_filtered_list = list()
 table = list()
 
-for k, v in relateds.iterrows():
+for k, v in initial_df.iterrows():
     obj_id.append(v.anime_id)
+    v.image_url.replace('https://myanimelist.cdn-dena.com/', 'https://cdn.myanimelist.net/')
+
+
 
     if v.related != "[]":
         w = list()
@@ -69,8 +72,9 @@ for i in range(len(table) - 1, 0, -1):
     if table[i][2] not in obj_id or table[i][2] == table[i][0]:
         table.pop(i)
 
+
 zp = pd.DataFrame(sorted(table, key=lambda x: (x[0], x[1], x[2])))
 zp.to_csv(filename, header=None, index=False, encoding='utf-8-sig')
+print(filename, 'updated!')
 zp.rename(columns={0: 'id_anime_object', 1: 'id_relation', 2: 'id_anime_subject'}).to_sql('relation', index=False,  if_exists='append', con=engine)
-print('Table Relation updated')
-
+print('Table Relation updated!')

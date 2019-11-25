@@ -17,7 +17,6 @@ q = """
 
 
 plsg = pd.read_csv(st_csv_filename)
-# plsg = pd.read_sql(q, engine)
 
 
 # main_files
