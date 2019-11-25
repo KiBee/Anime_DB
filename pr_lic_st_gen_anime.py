@@ -81,6 +81,7 @@ for s, c, l, f in zip(sets, cols, main_lists, main_files):
     reindexing(l).to_csv(f, header=None, encoding='utf-8-sig')
     print(f, 'updated')
 
+
 # # запись основных таблиц в базу
 print()
 reindexing(prods_list).rename(columns={0: 'title_producer'}).to_sql('producer', index='id_producer',  if_exists='append', con=engine)
@@ -91,6 +92,7 @@ reindexing(studs_list).rename(columns={0: 'title_studio'}).to_sql('studio', inde
 print('Table Studio updated')
 reindexing(genres_list).rename(columns={0: 'title_genre'}).to_sql('genre', index='id_genre',  if_exists='append', con=engine)
 print('Table Genres updated')
+
 
 # запись промежуточных таблиц в csv
 for c, m, stl, stf in zip(cols, main_lists, staging_lists, staging_files):
@@ -104,6 +106,7 @@ for c, m, stl, stf in zip(cols, main_lists, staging_lists, staging_files):
             stl.append(list(map(int, (v.anime_id, 1))))
     reindexing(stl).to_csv(stf, header=None, index=None, encoding='utf-8-sig')
     print(stf, 'updated')
+
 
 # # запись промежуточных таблиц в базу
 reindexing(prods_animelist_list).rename(columns={0: 'id_anime', 1: 'id_producer'}).to_sql('anime_producer', index=False,  if_exists='append', con=engine)
