@@ -43,6 +43,8 @@ licens_animelist_list = list()
 studs_animelist_list = list()
 genres_animelist_list = list()
 
+anime_table = 'test_anime'
+
 cols = ['producer', 'licensor', 'studio', 'genre']
 sets = [prods, licens, studs, genres]
 
@@ -90,17 +92,24 @@ def reindexing(lst):
     return rdf
 
 
-for i in cols:
+def clear_table(table_name):
     q = f"""
-        DELETE
-        FROM {i}
-    """
+            DELETE
+            FROM {table_name}
+        """
     cursor = engine.connect()
     cursor.execute(q)
+
+
+for i in cols:
+    clear_table(i)
+    clear_table(f'anime_{i}')
+clear_table(anime_table)
 
 # добавление  полей с сылками на myanimelist и shikimori
 anime['url_mal'] = 'https://myanimelist.net/anime/' + anime.anime_id.apply(str)
 anime['url_shiki'] = 'https://shikimori.one/animes/' + anime.anime_id.apply(str)
+anime['airing'] = anime.airing.apply(bool) + 1
 
 # перезапись поля duration (перевод в минуты)
 anime.duration = anime.duration.apply(change_dur)
@@ -108,7 +117,7 @@ anime.duration = anime.duration.apply(change_dur)
 # перезапись полей с url_image(битые ссылки)
 anime.image_url = anime.image_url.apply(change_url_img)
 
-# запись основных таблиц в csv
+# образование списков основных таблиц
 for s, c, m, f, stl, stf in zip(sets, cols, main_lists, main_files, staging_lists, staging_files):
     for k, v in anime.iterrows():
         if not v[c] is None and str(v[c]) != 'nan':
@@ -138,13 +147,13 @@ for s, c, m, f, stl, stf in zip(sets, cols, main_lists, main_files, staging_list
     reindexing(stl).to_csv(stf, header=None, index=None, encoding='utf-8-sig')
     print(stf, 'updated!')
 
-    reindexing(stl).rename(columns={0: 'id_anime', 1: f'id_{c}'}).to_sql(f'anime_{c}', index=False, if_exists='replace',
+    reindexing(stl).rename(columns={0: 'id_anime', 1: f'id_{c}'}).to_sql(f'anime_{c}', index=False, if_exists='append',
                                                                          con=engine)
     print(f'Table {c}_anime updated!')
     print()
 
 anime.drop(
-    columns=['airing', 'aired_string', 'aired', 'score', 'scored_by', 'rank', 'popularity', 'members', 'favorites',
+    columns=['aired_string', 'aired', 'score', 'scored_by', 'rank', 'popularity', 'members', 'favorites',
              'background', 'premiered', 'broadcast', 'related', 'producer', 'licensor', 'studio', 'genre'],
     inplace=True)
 
@@ -158,14 +167,15 @@ anime.rename(columns={0: 'anime_id',
                       7: 'source',
                       8: 'episodes',
                       9: 'status',
+                      10: 'airing',
                       13: 'duration',
                       14: 'rating',
                       19: 'opening_theme',
                       20: 'ending_theme',
                       21: 'url_mal',
                       22: 'url_shiki'
-                      }).to_sql('test_anime', index=False, if_exists='replace', con=engine)
+                      }).to_sql(anime_table, index=False, if_exists='append', con=engine)
 
 print('Table test_anime updated!')
-print('Complete!')
 
+print('Complete!')
