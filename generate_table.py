@@ -220,7 +220,7 @@ pd.DataFrame(relation).replace(
     columns={0: 'id_anime_object', 1: 'id_relation', 2: 'id_anime_subject'}).to_sql(
     relation_table, index=False, if_exists='append', con=engine)
 print('Table', relation_table, 'updated!')
- 
+
 # Запись файла relation.csv (связи между аниме)
 pd.DataFrame(relation).replace(
     to_replace=r'&#039;', value="'", regex=True).replace(
