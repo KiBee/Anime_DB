@@ -185,16 +185,16 @@ for s, col, mlist, mfile, slist, sfile in zip(sets, cols, main_lists, main_files
         if not data[col] is None and str(data[col]) != 'nan':
             buf_list = list(map(str, data[col].split(', ')))
             for i in range(len(buf_list)):
-                slist.append(list(map(int, (data.anime_id, mlist.index(buf_list[i])))))
+                slist.append(list(map(int, (data.anime_id, mlist.index(str(buf_list[i]))+1))))
         else:
             slist.append(list(map(int, (data.anime_id, 1))))
 
     # запись промежуточных таблиц в csv
-    reindexing(slist).to_csv(sfile, header=None, index=None, encoding='utf-8-sig')
+    pd.DataFrame(slist).to_csv(sfile, header=None, index=None, encoding='utf-8-sig')
     print('File', sfile, 'updated!')
 
     # запись промежуточных таблиц в базу
-    reindexing(slist).rename(
+    pd.DataFrame(slist).rename(
         columns={0: 'id_anime', 1: f'id_{col}'}).to_sql(f'anime_{col}', index=False, if_exists='append', con=engine)
     print(f'Table {col}_anime updated!')
     print()
