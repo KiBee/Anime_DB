@@ -46,114 +46,77 @@ CREATE TABLE IF NOT EXISTS `anime` (
 
 -- Экспортируемые данные не выделены.
 
--- Дамп структуры для таблица anime_norm_maria.animelists_cleaned_full
-CREATE TABLE IF NOT EXISTS `animelists_cleaned_full` (
-  `username` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `anime_id` int(11) unsigned NOT NULL,
-  `my_watched_episodes` int(11) DEFAULT NULL,
-  `my_start_date` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `my_finish_date` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `my_score` int(11) DEFAULT NULL,
-  `my_status` int(11) DEFAULT NULL,
-  `my_rewatching` tinyint(4) DEFAULT NULL,
-  `my_rewatching_ep` int(11) DEFAULT NULL,
-  `my_last_updated` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `my_tags` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `broadcast_day` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `broadcast_time` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Экспортируемые данные не выделены.
-
--- Дамп структуры для таблица anime_norm_maria.anime_filtered_full
-CREATE TABLE IF NOT EXISTS `anime_filtered_full` (
-  `anime_id` int(11) unsigned NOT NULL,
-  `title` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `title_english` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `title_japanese` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `title_synonyms` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `image_url` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `type` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `source` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `episodes` int(11) DEFAULT NULL,
-  `status` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `airing` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `aired_string` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `aired` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `duration` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `rating` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `score` double DEFAULT NULL,
-  `scored_by` int(11) DEFAULT NULL,
-  `rank` double DEFAULT NULL,
-  `popularity` int(11) DEFAULT NULL,
-  `members` int(11) DEFAULT NULL,
-  `favorites` int(11) DEFAULT NULL,
-  `background` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `premiered` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `broadcast` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `related` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `producer` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `licensor` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `studio` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `genre` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `opening_theme` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ending_theme` text COLLATE utf8mb4_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Экспортируемые данные не выделены.
-
 -- Дамп структуры для таблица anime_norm_maria.anime_genre
 CREATE TABLE IF NOT EXISTS `anime_genre` (
-  `id_anime` bigint(20) DEFAULT NULL,
-  `id_genre` bigint(20) DEFAULT NULL
+  `id_anime` int(11) unsigned NOT NULL,
+  `id_genre` int(11) unsigned NOT NULL,
+  KEY `FK_anime_genre_genre` (`id_genre`),
+  KEY `FK_anime_genre_anime` (`id_anime`),
+  CONSTRAINT `FK_anime_genre_anime` FOREIGN KEY (`id_anime`) REFERENCES `anime` (`anime_id`),
+  CONSTRAINT `FK_anime_genre_genre` FOREIGN KEY (`id_genre`) REFERENCES `genre` (`id_genre`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Экспортируемые данные не выделены.
 
 -- Дамп структуры для таблица anime_norm_maria.anime_licensor
 CREATE TABLE IF NOT EXISTS `anime_licensor` (
-  `id_anime` bigint(20) DEFAULT NULL,
-  `id_licensor` bigint(20) DEFAULT NULL
+  `id_anime` int(10) unsigned NOT NULL,
+  `id_licensor` int(10) unsigned NOT NULL,
+  KEY `FK_anime_licensor_anime` (`id_anime`),
+  KEY `FK_anime_licensor_licensor` (`id_licensor`),
+  CONSTRAINT `FK_anime_licensor_anime` FOREIGN KEY (`id_anime`) REFERENCES `anime` (`anime_id`),
+  CONSTRAINT `FK_anime_licensor_licensor` FOREIGN KEY (`id_licensor`) REFERENCES `licensor` (`id_licensor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Экспортируемые данные не выделены.
 
 -- Дамп структуры для таблица anime_norm_maria.anime_producer
 CREATE TABLE IF NOT EXISTS `anime_producer` (
-  `id_anime` bigint(20) DEFAULT NULL,
-  `id_producer` bigint(20) DEFAULT NULL
+  `id_anime` int(11) unsigned NOT NULL,
+  `id_producer` int(11) unsigned NOT NULL,
+  KEY `FK_anime_producer_anime` (`id_anime`),
+  KEY `FK_anime_producer_producer` (`id_producer`),
+  CONSTRAINT `FK_anime_producer_anime` FOREIGN KEY (`id_anime`) REFERENCES `anime` (`anime_id`),
+  CONSTRAINT `FK_anime_producer_producer` FOREIGN KEY (`id_producer`) REFERENCES `producer` (`id_producer`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Экспортируемые данные не выделены.
 
 -- Дамп структуры для таблица anime_norm_maria.anime_studio
 CREATE TABLE IF NOT EXISTS `anime_studio` (
-  `id_anime` bigint(20) DEFAULT NULL,
-  `id_studio` bigint(20) DEFAULT NULL
+  `id_anime` int(11) unsigned NOT NULL,
+  `id_studio` int(11) unsigned NOT NULL,
+  KEY `FK_anime_studio_anime` (`id_anime`),
+  KEY `FK_anime_studio_studio` (`id_studio`),
+  CONSTRAINT `FK_anime_studio_anime` FOREIGN KEY (`id_anime`) REFERENCES `anime` (`anime_id`),
+  CONSTRAINT `FK_anime_studio_studio` FOREIGN KEY (`id_studio`) REFERENCES `studio` (`id_studio`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Экспортируемые данные не выделены.
 
 -- Дамп структуры для таблица anime_norm_maria.genre
 CREATE TABLE IF NOT EXISTS `genre` (
-  `id_genre` int(11) DEFAULT NULL,
-  `title_genre` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `id_genre` int(11) unsigned NOT NULL,
+  `title_genre` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id_genre`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Экспортируемые данные не выделены.
 
 -- Дамп структуры для таблица anime_norm_maria.licensor
 CREATE TABLE IF NOT EXISTS `licensor` (
-  `id_licensor` int(11) DEFAULT NULL,
-  `title_licensor` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `id_licensor` int(11) unsigned NOT NULL,
+  `title_licensor` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id_licensor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Экспортируемые данные не выделены.
 
 -- Дамп структуры для таблица anime_norm_maria.producer
 CREATE TABLE IF NOT EXISTS `producer` (
-  `id_producer` int(11) DEFAULT NULL,
-  `title_producer` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `id_producer` int(11) unsigned NOT NULL,
+  `title_producer` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id_producer`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Экспортируемые данные не выделены.
@@ -161,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `producer` (
 -- Дамп структуры для таблица anime_norm_maria.relation
 CREATE TABLE IF NOT EXISTS `relation` (
   `id_anime_object` int(11) unsigned NOT NULL,
-  `id_relation` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `title_relation` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `id_anime_subject` int(11) unsigned NOT NULL,
   KEY `FK_anime_related_anime` (`id_anime_object`),
   KEY `FK_anime_related_anime_2` (`id_anime_subject`),
@@ -173,29 +136,29 @@ CREATE TABLE IF NOT EXISTS `relation` (
 
 -- Дамп структуры для таблица anime_norm_maria.studio
 CREATE TABLE IF NOT EXISTS `studio` (
-  `id_studio` int(11) DEFAULT NULL,
-  `title_studio` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `id_studio` int(11) unsigned NOT NULL,
+  `title_studio` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id_studio`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Экспортируемые данные не выделены.
 
 -- Дамп структуры для таблица anime_norm_maria.user
 CREATE TABLE IF NOT EXISTS `user` (
-  `id_user` int(10) unsigned NOT NULL,
-  `username` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `gender` enum('Male','Female','Non-Binary') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gender` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `birth_date` date NOT NULL,
   `join_date` date NOT NULL,
   `location_user` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id_user`)
+  PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Экспортируемые данные не выделены.
 
 -- Дамп структуры для таблица anime_norm_maria.user_anime
 CREATE TABLE IF NOT EXISTS `user_anime` (
-  `id_user` int(10) unsigned NOT NULL,
-  `id_anime` int(10) unsigned NOT NULL,
+  `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `id_anime` int(11) unsigned NOT NULL,
   `watched_ep` int(10) unsigned NOT NULL,
   `my_status` int(1) unsigned NOT NULL,
   `my_start_date` date NOT NULL,
@@ -204,34 +167,10 @@ CREATE TABLE IF NOT EXISTS `user_anime` (
   `my_rewatching` int(10) unsigned NOT NULL,
   `my_rewatching_ep` int(10) unsigned NOT NULL,
   `my_tags` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id_user`,`id_anime`),
-  KEY `FK_user-anime_anime` (`id_anime`),
-  KEY `FK_user-anime_user` (`id_user`),
-  CONSTRAINT `FK_user-anime_anime` FOREIGN KEY (`id_anime`) REFERENCES `anime` (`anime_id`),
-  CONSTRAINT `FK_user-anime_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Экспортируемые данные не выделены.
-
--- Дамп структуры для таблица anime_norm_maria.user_filtered
-CREATE TABLE IF NOT EXISTS `user_filtered` (
-  `username` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `user_watching` int(11) DEFAULT NULL,
-  `user_completed` int(11) DEFAULT NULL,
-  `user_onhold` int(11) DEFAULT NULL,
-  `user_dropped` int(11) DEFAULT NULL,
-  `user_plantowatch` int(11) DEFAULT NULL,
-  `user_days_spent_watching` double DEFAULT NULL,
-  `gender` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `location` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `birth_date` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `access_rank` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `join_date` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `last_online` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `stats_mean_score` double DEFAULT NULL,
-  `stats_rewatched` double DEFAULT NULL,
-  `stats_episodes` double DEFAULT NULL
+  KEY `FK_user_anime_user` (`username`),
+  KEY `FK_user_anime_anime` (`id_anime`),
+  CONSTRAINT `FK_user_anime_anime` FOREIGN KEY (`id_anime`) REFERENCES `anime` (`anime_id`),
+  CONSTRAINT `FK_user_anime_user` FOREIGN KEY (`username`) REFERENCES `user` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Экспортируемые данные не выделены.
