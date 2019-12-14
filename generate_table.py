@@ -167,13 +167,15 @@ anime.duration = anime.duration.apply(change_dur)
 # Запись главной таблицы anime в csv
 anime.drop(
     columns=['aired_string', 'aired', 'score', 'scored_by', 'rank', 'popularity', 'members', 'favorites',
-             'background', 'premiered', 'broadcast', 'related', 'producer', 'licensor', 'studio', 'genre']).to_csv(anime_file, index=None, encoding='utf-8-sig')
+             'background', 'premiered', 'broadcast', 'related', 'producer', 'licensor', 'studio', 'genre']).to_csv(
+    anime_file, index=None, encoding='utf-8-sig')
 print('File', anime_file, 'updated!')
 
 # Запись главной таблицы anime в базу
 anime.drop(
     columns=['aired_string', 'aired', 'score', 'scored_by', 'rank', 'popularity', 'members', 'favorites',
-             'background', 'premiered', 'broadcast', 'related', 'producer', 'licensor', 'studio', 'genre']).to_sql(anime_table, index=False, if_exists='append', con=engine)
+             'background', 'premiered', 'broadcast', 'related', 'producer', 'licensor', 'studio', 'genre']).to_sql(
+    anime_table, index=False, if_exists='append', con=engine)
 print('Table', anime_table, 'updated!')
 
 for s, col, mlist, mfile, slist, sfile in zip(sets, cols, main_lists, main_files, staging_lists, staging_files):
@@ -197,7 +199,7 @@ for s, col, mlist, mfile, slist, sfile in zip(sets, cols, main_lists, main_files
         if not data[col] is None and str(data[col]) != 'nan':
             buf_list = list(map(str, data[col].split(', ')))
             for i in range(len(buf_list)):
-                slist.append(list(map(int, (data.anime_id, mlist.index(str(buf_list[i]))+1))))
+                slist.append(list(map(int, (data.anime_id, mlist.index(str(buf_list[i])) + 1))))
         else:
             slist.append(list(map(int, (data.anime_id, 1))))
 
@@ -210,23 +212,6 @@ for s, col, mlist, mfile, slist, sfile in zip(sets, cols, main_lists, main_files
         columns={0: 'id_anime', 1: f'id_{col}'}).to_sql(f'anime_{col}', index=False, if_exists='append', con=engine)
     print(f'Table {col}_anime updated!')
     print()
-
-# Удаление лишних колонок
-# anime.drop(
-#     columns=['aired_string', 'aired', 'score', 'scored_by', 'rank', 'popularity', 'members', 'favorites',
-#              'background', 'premiered', 'broadcast', 'related', 'producer', 'licensor', 'studio', 'genre'])
-
-# # Запись главной таблицы anime в csv
-# anime.drop(
-#     columns=['aired_string', 'aired', 'score', 'scored_by', 'rank', 'popularity', 'members', 'favorites',
-#              'background', 'premiered', 'broadcast', 'related', 'producer', 'licensor', 'studio', 'genre']).to_csv(anime_file, index=None, encoding='utf-8-sig')
-# print('File', anime_file, 'updated!')
-#
-# # Запись главной таблицы anime в базу
-# anime.drop(
-#     columns=['aired_string', 'aired', 'score', 'scored_by', 'rank', 'popularity', 'members', 'favorites',
-#              'background', 'premiered', 'broadcast', 'related', 'producer', 'licensor', 'studio', 'genre']).to_sql(anime_table, index=False, if_exists='append', con=engine)
-# print('Table', anime_table, 'updated!')
 
 # Запись таблицы relation (связи между аниме)
 pd.DataFrame(relation).replace(
